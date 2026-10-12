@@ -1,0 +1,45 @@
+﻿Seed: 26 (t=2, u=6)
+--- Step 1 ---
+Step 1: Algorithms Unlocked (2009), 178 pages
+Step 1: stored as LibraryItem: Algorithms Unlocked
+Step 1: runtimeType = Book
+--- Step 2 ---
+Step 2: Algorithms Unlocked (2009), 178 pages
+Step 2: Computer Networks (2011), issue 9
+--- Step 3 ---
+Step 3: Book late fee for 5 days = 35
+Step 3: Magazine late fee for 5 days = 15
+Step 3: Dvd late fee for 5 days = 70
+--- Step 4 ---
+Step 4: available? true
+Step 4: after borrow? false
+Step 4: after return? true
+Step 4: Book borrowable? true
+Step 4: Magazine borrowable? false
+Step 4: Dvd borrowable? false
+--- Step 5 ---
+Step 5: renewed 3 of 8 attempts (limit 3)
+Step 5: renew once more? false
+Step 5: dvd can renew too? true
+--- Step 6 ---
+Step 6: member type = guest (index 2)
+Step 6: max loans = 1
+Step 6: book fee 35 -> 35 after discount
+--- Step 7 ---
+Step 7: Rs 35
+Step 7: initials of "Algorithms Unlocked" = AU
+Step 7: shelf fee for 5 days = Rs 120
+--- Step 8 ---
+Step 8: Fine(35) + Fine(15) = Fine(50)
+Step 8: first bigger? true
+Step 8: equal copies? true
+Step 8: set size = 2
+--- Step 9 ---
+Step 9: items created = 10
+Step 9: capped fee = 112 (cap 170)
+Step 9: const copies identical? true
+Step 9: new copies identical? false
+--- Step 10 ---
+Step 10: 5 items, 2 borrowable, 3 renewable
+Step 10: S26 (guest) owes Fine(170)
+Step 10: over the cap? false
