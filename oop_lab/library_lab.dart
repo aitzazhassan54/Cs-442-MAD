@@ -111,6 +111,18 @@ enum MemberType {
   int applyDiscount(int fee) => fee - (fee * discountPercent ~/ 100);
 }
 
+extension MoneyText on int {
+  String get rs => 'Rs $this';
+}
+
+extension Initials on String {
+  String get initials => split(' ').map((w) => w[0]).join();
+}
+
+extension ShelfMath on List<LibraryItem> {
+  int totalLateFee(int days) => fold(0, (sum, i) => sum + i.lateFee(days));
+}
+
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
   step1();
@@ -228,6 +240,24 @@ void step6() {
 
 void step7() {
   print('--- Step 7 ---');
+  final type = MemberType.values[seed % 3];
+  final fee = mainBook().lateFee(daysLate);
+  final discounted = type.applyDiscount(fee);
+  print('Step 7: ${discounted.rs}');
+
+  final title = titles[u];
+  print('Step 7: initials of "$title" = ${title.initials}');
+
+  final List<LibraryItem> shelf = [mainBook(), mainMagazine(), mainDvd()];
+  print(
+    'Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}',
+  );
+
+  // Think: You could have written plain functions rs(int x). What do you
+  // gain by writing 72.rs instead?
+  //  it reads naturally, like a built-in
+  // method, it chains left to right, and the editor autocompletes it on
+  // any int, so it is easier to find and use than a separate function.
 }
 
 void step8() {
