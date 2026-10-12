@@ -99,6 +99,18 @@ mixin Renewable {
   }
 }
 
+enum MemberType {
+  student(3, 50),
+  faculty(10, 20),
+  guest(1, 0);
+
+  final int maxLoans;
+  final int discountPercent;
+  const MemberType(this.maxLoans, this.discountPercent);
+
+  int applyDiscount(int fee) => fee - (fee * discountPercent ~/ 100);
+}
+
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
   step1();
@@ -202,6 +214,16 @@ void step5() {
 
 void step6() {
   print('--- Step 6 ---');
+  final type = MemberType.values[seed % 3];
+  final fee = mainBook().lateFee(daysLate);
+  print('Step 6: member type = ${type.name} (index ${type.index})');
+  print('Step 6: max loans = ${type.maxLoans}');
+  print('Step 6: book fee $fee -> ${type.applyDiscount(fee)} after discount');
+
+  // Think: Why is MemberType.student safer than the string 'student'?
+  //  a typo like 'studnet' in a string compiles
+  // and fails silently at runtime, but a typo in MemberType.studnet is a
+  // compile error. The enum also limits the choices to a fixed set.
 }
 
 void step7() {
