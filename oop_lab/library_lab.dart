@@ -28,10 +28,19 @@ final int shelfSize = 3 + u % 4; // items on the shelf in Steps 9-10
 
 // ===========================================================================
 abstract class LibraryItem {
+  static int created = 0;
+
   final String title;
   final int year;
-  LibraryItem(this.title, this.year);
+
+  LibraryItem(this.title, this.year) {
+    created++;
+  }
+
+  static int capFee(int fee) => fee > feeCap ? feeCap : fee;
+
   String describe() => '$title ($year)';
+
   int lateFee(int days);
 }
 
@@ -80,6 +89,21 @@ class Dvd extends LibraryItem with Renewable {
 Dvd mainDvd() {
   int i = (u + 2) % 10;
   return Dvd(titles[i], yearOf(i), 90 + seed % 40);
+}
+
+List<LibraryItem> buildShelf() {
+  final List<LibraryItem> list = [];
+  for (int k = 0; k < shelfSize; k++) {
+    final i = (u + k) % 10;
+    if (k % 3 == 0) {
+      list.add(Book(titles[i], yearOf(i), 100 + 3 * seed));
+    } else if (k % 3 == 1) {
+      list.add(Magazine(titles[i], yearOf(i), 1 + (t + k) % 12));
+    } else {
+      list.add(Dvd(titles[i], yearOf(i), 90 + seed % 40));
+    }
+  }
+  return list;
 }
 
 Book mainBook() => Book(titles[u], yearOf(u), 100 + 3 * seed);
@@ -297,6 +321,23 @@ void step8() {
 
 void step9() {
   print('--- Step 9 ---');
+  LibraryItem.created = 0;
+  buildShelf();
+  final shelf = buildShelf();
+  print('Step 9: items created = ${LibraryItem.created}');
+  print(
+    'Step 9: capped fee = ${LibraryItem.capFee(shelf.first.lateFee(daysBig))} (cap $feeCap)',
+  );
+  print(
+    'Step 9: const copies identical? ${identical(const Fine(10), const Fine(10))}',
+  );
+  print('Step 9: new copies identical? ${identical(Fine(10), Fine(10))}');
+
+  // Think: Why can created be read as LibraryItem.created without making
+  // any object first?
+  //  a static member belongs to the class
+  // itself, not to any object, so it exists as soon as the class is loaded
+  // and there is only one copy shared by all objects.
 }
 
 void step10() {
