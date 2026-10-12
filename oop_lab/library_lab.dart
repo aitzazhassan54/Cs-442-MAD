@@ -27,11 +27,12 @@ final int renewAttempts = 2 + u; // renewal attempts made in Step 5
 final int shelfSize = 3 + u % 4; // items on the shelf in Steps 9-10
 
 // ===========================================================================
-class LibraryItem {
+abstract class LibraryItem {
   final String title;
   final int year;
   LibraryItem(this.title, this.year);
   String describe() => '$title ($year)';
+  int lateFee(int days);
 }
 
 class Book extends LibraryItem {
@@ -39,6 +40,8 @@ class Book extends LibraryItem {
   Book(super.title, super.year, this.pages);
   @override
   String describe() => '${super.describe()}, $pages pages';
+  @override
+  int lateFee(int days) => days * feePerDay;
 }
 
 class Magazine extends LibraryItem {
@@ -47,11 +50,29 @@ class Magazine extends LibraryItem {
 
   @override
   String describe() => '${super.describe()}, issue $issue';
+  @override
+  int lateFee(int days) => days * (feePerDay ~/ 2);
 }
 
 Magazine mainMagazine() {
   int i = (u + 1) % 10;
   return Magazine(titles[i], yearOf(i), 1 + (t + u) % 12);
+}
+
+class Dvd extends LibraryItem {
+  final int minutes;
+  Dvd(super.title, super.year, this.minutes);
+
+  @override
+  String describe() => '${super.describe()}, $minutes min';
+
+  @override
+  int lateFee(int days) => days * feePerDay * 2;
+}
+
+Dvd mainDvd() {
+  int i = (u + 2) % 10;
+  return Dvd(titles[i], yearOf(i), 90 + seed % 40);
 }
 
 Book mainBook() => Book(titles[u], yearOf(u), 100 + 3 * seed);
@@ -99,6 +120,21 @@ void step2() {
 
 void step3() {
   print('--- Step 3 ---');
+  print(
+    'Step 3: Book late fee for $daysLate days = ${mainBook().lateFee(daysLate)}',
+  );
+  print(
+    'Step 3: Magazine late fee for $daysLate days = ${mainMagazine().lateFee(daysLate)}',
+  );
+  print(
+    'Step 3: Dvd late fee for $daysLate days = ${mainDvd().lateFee(daysLate)}',
+  );
+
+  // Think: Why can you not create an abstract class directly?
+  // Try LibraryItem('x', 2000); once, read the error, then delete that line.
+  //  an abstract class has methods with
+  // no body (lateFee), so there would be nothing to run if you called
+  // them. Only concrete subclasses that fill in every method can be created.
 }
 
 void step4() {
