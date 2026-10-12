@@ -35,7 +35,7 @@ abstract class LibraryItem {
   int lateFee(int days);
 }
 
-class Book extends LibraryItem implements Borrowable {
+class Book extends LibraryItem with Renewable implements Borrowable {
   final int pages;
   bool _out = false;
   Book(super.title, super.year, this.pages);
@@ -66,7 +66,7 @@ Magazine mainMagazine() {
   return Magazine(titles[i], yearOf(i), 1 + (t + u) % 12);
 }
 
-class Dvd extends LibraryItem {
+class Dvd extends LibraryItem with Renewable {
   final int minutes;
   Dvd(super.title, super.year, this.minutes);
 
@@ -88,6 +88,15 @@ abstract class Borrowable {
   bool get isAvailable;
   void borrow();
   void giveBack();
+}
+
+mixin Renewable {
+  int renewals = 0;
+  bool renew(int limit) {
+    if (renewals >= limit) return false;
+    renewals++;
+    return true;
+  }
 }
 
 void main() {
@@ -175,6 +184,20 @@ void step4() {
 
 void step5() {
   print('--- Step 5 ---');
+  Book book = mainBook();
+  int ok = 0;
+  for (int k = 0; k < renewAttempts; k++) {
+    if (book.renew(renewLimit)) ok++;
+  }
+  print('Step 5: renewed $ok of $renewAttempts attempts (limit $renewLimit)');
+  print('Step 5: renew once more? ${book.renew(renewLimit)}');
+  print('Step 5: dvd can renew too? ${mainDvd().renew(1)}');
+
+  // Think: Book and Dvd need the same renew code but Magazine must not
+  // have it. Why is a mixin a better fit than putting renew in LibraryItem?
+  // anything in LibraryItem is inherited by
+  // every subclass, including Magazine. A mixin lets me add the code
+  // only to the classes that should have it, without a shared parent.
 }
 
 void step6() {
