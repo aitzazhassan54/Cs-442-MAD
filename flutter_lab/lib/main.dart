@@ -259,17 +259,52 @@ class Countdown extends StatefulWidget {
   State<Countdown> createState() => _CountdownState();
 }
 
-// Think: if _timer.cancel() is missing from dispose and the widget is
-// removed, the Timer keeps firing and calls setState() on a disposed State.
-// The console shows "setState() called after dispose()" (a FlutterError),
-// and the timer also leaks memory.
+// // Think: if _timer.cancel() is missing from dispose and the widget is
+// // removed, the Timer keeps firing and calls setState() on a disposed State.
+// // The console shows "setState() called after dispose()" (a FlutterError),
+// // and the timer also leaks memory.
+// class _CountdownState extends State<Countdown> {
+//   late int _left;
+//   late Timer _timer;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _left = startSeconds;
+//     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+//       setState(() => _left--);
+//       if (_left <= 0) timer.cancel(); // stop at zero
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     _timer.cancel();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     if (_left > 0) {
+//       return Text('Time left: $_left s', key: const Key('time-left'));
+//     }
+//     return const Text('Time is up!', key: Key('time-left'));
+//   }
+// }
+
+// Think: Builds goes up by one per second, not two, because each timer tick
+// calls setState exactly once, and each setState triggers exactly one build.
+// To prove dispose ran, print lifecycleLog (for example with
+// debugPrint(lifecycleLog.toString()) in dispose, or show it in a Text).
 class _CountdownState extends State<Countdown> {
   late int _left;
   late Timer _timer;
+  int _builds = 0;
 
   @override
   void initState() {
     super.initState();
+    lifecycleLog.add('initState');
     _left = startSeconds;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() => _left--);
@@ -279,15 +314,22 @@ class _CountdownState extends State<Countdown> {
 
   @override
   void dispose() {
+    lifecycleLog.add('dispose');
     _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_left > 0) {
-      return Text('Time left: $_left s', key: const Key('time-left'));
-    }
-    return const Text('Time is up!', key: Key('time-left'));
+    _builds++;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _left > 0
+            ? Text('Time left: $_left s', key: const Key('time-left'))
+            : const Text('Time is up!', key: Key('time-left')),
+        Text('Builds: $_builds', key: const Key('builds')),
+      ],
+    );
   }
 }
