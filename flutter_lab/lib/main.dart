@@ -38,24 +38,23 @@ final List<String> lifecycleLog = <String>[];
 void main() => runApp(const LabApp());
 
 // Keep the name LabApp and its const constructor: the checker uses them.
+// Stateless: it only builds the app shell and holds nothing that changes.
 class LabApp extends StatelessWidget {
   const LabApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Step 1 replaces everything below.
     return const MaterialApp(title: 'Study Tracker', home: HomePage());
   }
 }
 
+// Stateless: it only lays out data it was given, nothing inside it changes.
 // Think: runApp receives the root widget of the whole app (LabApp), which
 // Flutter attaches to the screen. MaterialApp receives `home`, the first
 // page shown inside the app, here HomePage.
-// Stateless: it only displays data, so nothing inside it changes.
 // Think (widget tree): LabApp > MaterialApp > HomePage > Scaffold >
 // SingleChildScrollView > Column > Row > Text('Max: ..').
 // Counting LabApp as level 1, the Max Text is 8 levels deep.
-// Stateless: it only lays out data it was given, nothing inside it changes.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -218,6 +217,7 @@ class _TallyState extends State<Tally> {
 }
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
+// Stateful: it holds _clicks, which changes on every tap.
 class BuggyCounter extends StatefulWidget {
   const BuggyCounter({super.key});
 
