@@ -59,7 +59,41 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Study Tracker: $course')),
-      body: const Center(child: Text('Hello')),
+      body: StudentCard(name: studentName, roll: rollNo, course: course),
+    );
+  }
+}
+
+// Stateless: it only shows the name, roll and course it was given.
+// Think: the fields are final because a StatelessWidget is immutable. Flutter
+// can rebuild or reuse it at any time, so its data must never change. Without
+// final, the analyzer warns that a class marked @immutable has non-final fields.
+class StudentCard extends StatelessWidget {
+  const StudentCard({
+    super.key,
+    required this.name,
+    required this.roll,
+    required this.course,
+  });
+
+  final String name;
+  final String roll;
+  final String course;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name: $name', key: const Key('student-name')),
+            Text('Roll no: $roll', key: const Key('student-roll')),
+            Text('Course: $course', key: const Key('student-course')),
+          ],
+        ),
+      ),
     );
   }
 }
