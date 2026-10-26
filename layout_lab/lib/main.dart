@@ -128,7 +128,7 @@ class SettingsCard extends StatelessWidget {
     return Text(
       'YOUR SETTINGS (seed $seed)\n'
       'clock: start $startSec, tick $tick, stop at $stopAt\n'
-      'tiles: $tileA, $tileB, $tileC (taps for the Step 5 experiment:$tapsToMake)\n'
+      'tiles: $tileA, $tileB, $tileC (taps for the Step 5 experiment: $tapsToMake)\n'
       'row main axis: $mainName | column cross axis: $crossName\n'
       'flex: $flexA and $flexB | fixed width: ${fixedW.toStringAsFixed(0)}\n'
       'box: margin $boxMargin, padding $boxPad, radius $boxRadius, '
@@ -355,7 +355,7 @@ class InfoPanel extends StatelessWidget {
             Text('Stop: $stopAt s', key: const Key('row-c')),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Column(
           key: const Key('info-col'),
           crossAxisAlignment: CrossAxisAlignment.end,
