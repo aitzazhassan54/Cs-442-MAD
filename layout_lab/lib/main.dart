@@ -159,25 +159,48 @@ class Clock extends StatefulWidget {
 class _ClockState extends State<Clock> {
   late Timer _timer;
   int _seconds = startSec;
+  int _builds = 0;
 
   @override
   void initState() {
     super.initState();
+    lifecycleLog.add('initState');
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() => _seconds += tick);
       if (_seconds >= stopAt) timer.cancel(); // stop at your limit
     });
   }
 
-  // Think: Why start the Timer in initState and not in build?
-  // initState runs only once when the State is created, so exactly one timer
-  // exists. build runs on every setState, so starting the Timer there would
-  // create a new periodic timer on each rebuild. Each timer calls setState,
-  // which triggers more rebuilds and more timers, so the clock would run
-  // faster and faster (and the old timers would never be cancelled).
+  @override
+  void dispose() {
+    _timer.cancel();
+    lifecycleLog.add('dispose');
+    super.dispose();
+  }
+
+  // Think: Why does Builds go up by one per second and not by two?
+  // Each timer tick calls setState exactly once. setState marks the Element
+  // dirty and Flutter rebuilds it once in the next frame, so build runs once
+  // per tick. The Text and Column inside are not separate setState calls.
+  //
+  // Think: What error if _timer.cancel() were missing from dispose?
+  // The timer would keep firing after the widget left the screen and call
+  // setState on a disposed State: "setState() called after dispose()"
+  // (a memory leak too, since the timer keeps the State alive).
+  //
+  // Think (Step 1): Why start the Timer in initState and not in build?
+  // initState runs once. build runs on every setState, so a Timer started in
+  // build would create a new timer each rebuild and the clock would speed up.
 
   @override
   Widget build(BuildContext context) {
-    return Text('Session: $_seconds s', key: const Key('clock'));
+    _builds++;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Session: $_seconds s', key: const Key('clock')),
+        Text('Builds: $_builds', key: const Key('builds')),
+      ],
+    );
   }
 }
