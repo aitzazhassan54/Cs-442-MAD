@@ -95,6 +95,8 @@ class HomePage extends StatelessWidget {
           children: [
             const SettingsCard(),
             const SizedBox(height: 12),
+            const Welcome(),
+            const SizedBox(height: 12),
             const Clock(),
             const SizedBox(height: 12),
             // Add each new widget BELOW the previous one, in the order the
@@ -238,6 +240,41 @@ class Probe extends StatelessWidget {
         ),
         Text('Scaffold above me: $above', key: const Key('probe-above')),
       ],
+    );
+  }
+}
+
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Welcome, $studentName', key: const Key('welcome')),
+    );
+  }
+}
+
+// Think: You built Tile out of an ElevatedButton without writing
+// "extends ElevatedButton". What is this style called, and why does
+// Flutter prefer it?
+// It is called composition: a new widget is made by combining small existing
+// widgets (ElevatedButton + Text) instead of inheriting from a built-in
+// class. Flutter prefers it because it is simpler and more flexible, avoids
+// deep inheritance trees, and lets the State live in the State object.
+class Tile extends StatefulWidget {
+  const Tile(this.label, {super.key});
+  final String label;
+  @override
+  State<Tile> createState() => _TileState();
+}
+
+class _TileState extends State<Tile> {
+  int taps = 0;
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => setState(() => taps++),
+      child: Text('${widget.label}: $taps'),
     );
   }
 }
