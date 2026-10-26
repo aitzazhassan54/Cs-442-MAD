@@ -109,6 +109,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 12),
             const InfoBox(),
             const SizedBox(height: 12),
+            const StampStack(),
 
             // Add each new widget BELOW the previous one, in the order the
             // steps tell you, with a SizedBox(height: 12) between widgets.
@@ -406,6 +407,14 @@ class ShareRow extends StatelessWidget {
     );
   }
 }
+// Think: Which one is inside the border, margin or padding? When would you
+// use a plain Padding or SizedBox instead of a Container?
+// Padding is inside the border (space between the border and the child).
+// Margin is outside the border (space between the box and its neighbours).
+// Use a plain Padding when you only need spacing, and a SizedBox when you
+// only need a fixed width/height or a gap. They are lighter and clearer
+// than a Container, which is for combining several things (margin, padding,
+// decoration, size) at once.
 
 class InfoBox extends StatelessWidget {
   const InfoBox({super.key});
@@ -421,6 +430,42 @@ class InfoBox extends StatelessWidget {
         border: Border.all(width: boxBorder),
       ),
       child: Text('Course: $course', key: const Key('box-text')),
+    );
+  }
+}
+
+// Think: What decides the size of the Stack? What happens if the Icons come
+// first and the grey Container last?
+// The Stack sizes itself to its largest non-positioned child, here the grey
+// Container (300 x 120). Positioned children do not affect the Stack's size;
+// they are pinned to its edges. The first child is the bottom layer, so if
+// the Icons came first and the grey Container last, the Container would be
+// painted on top and hide the star and circle.
+class StampStack extends StatelessWidget {
+  const StampStack({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      key: const Key('stack'),
+      children: [
+        Container(
+          key: const Key('layer-base'),
+          width: 300,
+          height: 120,
+          color: Colors.grey.shade300,
+        ),
+        Positioned(
+          top: dotTop,
+          right: dotRight,
+          child: const Icon(Icons.star, key: Key('dot-top')),
+        ),
+        Positioned(
+          bottom: dotBottom,
+          left: dotLeft,
+          child: const Icon(Icons.circle, key: Key('dot-bottom')),
+        ),
+      ],
     );
   }
 }
