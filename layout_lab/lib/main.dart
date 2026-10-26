@@ -104,8 +104,11 @@ class HomePage extends StatelessWidget {
             const InfoPanel(),
             const SizedBox(height: 12),
             const SummaryRow(),
-            // Row(children: [Tile(tileA), Tile(tileB), Tile(tileC)]),
             const SizedBox(height: 12),
+            const ShareRow(),
+            const SizedBox(height: 12),
+            // Row(children: [Tile(tileA), Tile(tileB), Tile(tileC)]),
+
             // Add each new widget BELOW the previous one, in the order the
             // steps tell you, with a SizedBox(height: 12) between widgets.
           ],
@@ -136,6 +139,13 @@ class SettingsCard extends StatelessWidget {
 }
 
 // ---- Provided for Step 7. It overflows on purpose. Do not rename anything.
+// Think: Why does wrapping a Text in Expanded make it wrap its words?
+// A Row gives its children unbounded width, so a long Text asks for as much
+// width as its one line needs and overflows. Constraints go down, sizes go
+// up: Expanded makes the Row pass each child a bounded, fixed width (its
+// share of the available space). The Text now receives a maximum width
+// constraint, so it wraps onto several lines to fit and reports a smaller
+// size back up to the Row
 class SummaryRow extends StatelessWidget {
   const SummaryRow({super.key});
   @override
@@ -352,6 +362,44 @@ class InfoPanel extends StatelessWidget {
             Text('Roll no: $rollNo', key: const Key('col-b')),
             Text('Course: $course', key: const Key('col-c')),
           ],
+        ),
+      ],
+    );
+  }
+}
+
+// Think: What would change if Expanded and Flexible were swapped?
+// The first button (Exp, flex 3) would keep its small natural size, and the
+// second button (Flex, flex 1) would stretch to fill its share. Expanded is
+// "Flexible with fit: FlexFit.tight": it must fill its share of the free
+// space. Flexible (fit: loose) may be smaller than its share.
+class ShareRow extends StatelessWidget {
+  const ShareRow({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      key: const Key('share-row'),
+      children: [
+        SizedBox(
+          key: const Key('fixed'),
+          width: fixedW,
+          child: ElevatedButton(onPressed: () {}, child: const Text('F')),
+        ),
+        Expanded(
+          flex: flexA,
+          child: ElevatedButton(
+            key: const Key('exp'),
+            onPressed: () {},
+            child: const Text('Exp'),
+          ),
+        ),
+        Flexible(
+          flex: flexB,
+          child: ElevatedButton(
+            key: const Key('flex'),
+            onPressed: () {},
+            child: const Text('Flex'),
+          ),
         ),
       ],
     );
